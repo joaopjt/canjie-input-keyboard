@@ -24,11 +24,33 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Keyboard */
+.hg-theme-default.hg-button {
+  position: relative;
+}
+
+.hg-theme-default.hg-button span.toogle {
+  background-color: #607d8b;
+  border-radius: 4px;
+  color: white;
+  padding: 6px;
+  position: absolute;
+  transform: translateY(-100%);
+}
+
+.hg-theme-default.hg-button span.toogle:after {
+  background-color: #607d8b;
+  bottom: -8px;  /* half of the elements width/height */
+  border-bottom: 1px solid #000;
+  border-right: 1px solid #000;
+  content: "";
+  height: 16px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 16px;
+}
+
+.hg-theme-default.hg-button.toogle .toogle {
+  display: block;
 }

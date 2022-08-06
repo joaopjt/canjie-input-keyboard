@@ -1,15 +1,38 @@
 import './App.css';
-import 'react-simple-keyboard/build/css/index.css';
+import 'simple-keyboard/build/css/index.css';
 
 import { useState } from 'react';
 import Keyboard from 'react-simple-keyboard';
 import CangjieLibrary from './Odessa/index.js';
-import CangJieKeyBinding from './CangJieKeyBinding.json'
-import CangJieToogleKeyBinding from './CangJieKeyBinding.json'
+import CangJieKeyBinding from './CangJieKeyBinding.json';
+import CangJieToogleKeyBinding from './CangJieKeySoundBinding.json';
+
+const setup = () => {
+  Object.keys(CangJieToogleKeyBinding).forEach((key) => {
+    let button = document.querySelector(`div.hg-button.hg-standardBtn[data-skbtn="${key}"]`);
+
+    let toogle = document.createElement('span');
+    toogle.innerHTML = ` ${CangJieToogleKeyBinding[key]}`;
+
+    button.appendChild(toogle);
+  });
+};
 
 const CangJieKeyboard = () => {
   return <Keyboard mergeDisplay display={CangJieKeyBinding} physicalKeyboardHighlight />
 };
+
+// window.addEventListener('keydown', (e) => {
+//   let button = null;
+//   if (e.isComposing && CangJieToogleKeyBinding[e.key]) {
+//     button = document.querySelector(`div.hg-button.hg-standardBtn[data-skbtn="${e.key}"]`);
+//     button.addClass('toogle');
+//   } else {
+//     if (button) button.removeClass('toogle');
+//   }
+// });
+
+// setup();
 
 function App() {
   const library = CangjieLibrary.default;
@@ -21,18 +44,21 @@ function App() {
     e.preventDefault();
 
     if (e.nativeEvent.inputType === "deleteContentBackward") {
-      setText(Text.slice(0, Text.lenght - 1)[0]);
+      if (Text) setText(Text.slice(0, Text.lenght - 1)[0]);
     } else if (e.nativeEvent.inputType === "insertText") {
       if (Text === "") {
         setText(library[e.nativeEvent.data][0]);
       } else {
-        let text = Text += library[e.nativeEvent.data][0];
-        setText(text);
+        if (runtime) {
+
+        } else {
+          let text = Text += library[e.nativeEvent.data][0];
+          setText(text);
+          runtime++;
+        }
       }
     }
-
     
-    runtime++;
   };
 
   return (
