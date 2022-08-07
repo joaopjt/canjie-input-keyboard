@@ -35,58 +35,60 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    window.addEventListener('keydown', (e) => {
-      let button = null;
-      if (e.isComposing && CangJieToogleKeyBinding[e.key]) {
-        button = document.querySelector(`div.hg-button.hg-standardBtn[data-skbtn="${e.key}"]`);
-        button.classList.add('toogle');
-      }
-    });
-
-    window.addEventListener('keyup', (e) => {
-      let button = document.querySelector(`div.hg-button.hg-standardBtn[data-skbtn="${e.key}"]`);
-
-      if (button) button.removeClass('toogle');
-    })
-
-    this.setup();
-  }
-
-  render() {
     const library = CangjieLibrary.default;
-    const CangJieKeyboard = () => {
-      return <Keyboard mergeDisplay display={CangJieKeyBinding} physicalKeyboardHighlight />
-    };
 
     let runtime = 0;
     let phrase = "";
 
-    const onChange = (e) => {
+    this.setup(); // Toogle setup
+
+    document.querySelector('textarea.App-textbox').addEventListener('change', (e) => {
       e.preventDefault();
 
+      console.log(e);
+
       if (e.nativeEvent.inputType === "deleteContentBackward") {
-        if (this.state.Text) this.setText(Text.slice(0, Text.lenght - 1)[0]);
+        if (this.state.Text) this.setText(this.state.Text.slice(0, this.state.Text.lenght - 1)[0]);
       } else if (e.nativeEvent.inputType === "insertText") {
-        if (this.state.Text === "") {
+        if (!this.state.Text) {
           this.setText(library[e.nativeEvent.data][0]);
         } else {
           if (runtime === 4 && library[phrase][0]) {
-            console.log('dictionary word');
+            // this.setText(this.state.Text.slice(0, this.state.Text.lenght - 1)[0]);
           } else {
-            let text = Text += library[e.nativeEvent.data][0];
+            let text = this.state.Text += library[e.nativeEvent.data][0];
+            phrase += library[e.nativeEvent.data][0];
+
             this.setText(text);
             runtime++;
           }
         }
       }
       
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (CangJieToogleKeyBinding[e.key]) {
+        document.querySelector(`div.hg-button.hg-standardBtn[data-skbtn="${e.key}"]`).classList.add('toogle');
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (CangJieToogleKeyBinding[e.key]) {
+        document.querySelector(`div.hg-button.hg-standardBtn.toogle[data-skbtn="${e.key}"]`).classList.remove('toogle');
+      }
+    });
+  }
+
+  render() {
+    const CangJieKeyboard = () => {
+      return <Keyboard mergeDisplay display={CangJieKeyBinding} physicalKeyboardHighlight />
     };
 
     return (
       <div className="App">
         <header className="App-header">
-          <textarea className="App-textbox" onChange={onChange}>
-            {this.state.Text}
+          <textarea className="App-textbox" value={this.state.Text}>
           </textarea>
         </header>
         <CangJieKeyboard />
