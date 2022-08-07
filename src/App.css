@@ -29,16 +29,17 @@
   position: relative;
 }
 
-.hg-theme-default.hg-button span.toogle {
+.hg-button.hg-standardBtn span.toogle {
   background-color: #607d8b;
   border-radius: 4px;
   color: white;
-  padding: 6px;
+  display: none;
+  padding: 7px;
   position: absolute;
   transform: translateY(-100%);
 }
 
-.hg-theme-default.hg-button span.toogle:after {
+.hg-button.hg-standardBtn span.toogle:after {
   background-color: #607d8b;
   bottom: -8px;  /* half of the elements width/height */
   border-bottom: 1px solid #000;
@@ -49,6 +50,7 @@
   left: 50%;
   transform: translateX(-50%) rotate(45deg);
   width: 16px;
+  z-index: -1;
 }
 
 .hg-theme-default.hg-button.toogle .toogle {
