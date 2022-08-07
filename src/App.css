@@ -36,7 +36,7 @@
   display: none;
   padding: 7px;
   position: absolute;
-  transform: translateY(-100%);
+  transform: translateY(-130%);
 }
 
 .hg-button.hg-standardBtn span.toogle:after {
@@ -53,6 +53,6 @@
   z-index: -1;
 }
 
-.hg-theme-default.hg-button.toogle .toogle {
+.hg-button.hg-standardBtn.toogle span.toogle {
   display: block;
 }
