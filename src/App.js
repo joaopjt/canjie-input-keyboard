@@ -17,7 +17,7 @@ class App extends React.Component {
   }
 
   setText(text) {
-    this.state.Text = text;
+    this.setState({ Text: text });
   }
 
   setup() {
@@ -35,37 +35,7 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    const library = CangjieLibrary.default;
-
-    let runtime = 0;
-    let phrase = "";
-
     this.setup(); // Toogle setup
-
-    document.querySelector('textarea.App-textbox').addEventListener('change', (e) => {
-      e.preventDefault();
-
-      console.log(e);
-
-      if (e.nativeEvent.inputType === "deleteContentBackward") {
-        if (this.state.Text) this.setText(this.state.Text.slice(0, this.state.Text.lenght - 1)[0]);
-      } else if (e.nativeEvent.inputType === "insertText") {
-        if (!this.state.Text) {
-          this.setText(library[e.nativeEvent.data][0]);
-        } else {
-          if (runtime === 4 && library[phrase][0]) {
-            // this.setText(this.state.Text.slice(0, this.state.Text.lenght - 1)[0]);
-          } else {
-            let text = this.state.Text += library[e.nativeEvent.data][0];
-            phrase += library[e.nativeEvent.data][0];
-
-            this.setText(text);
-            runtime++;
-          }
-        }
-      }
-      
-    });
 
     window.addEventListener('keydown', (e) => {
       if (CangJieToogleKeyBinding[e.key]) {
@@ -75,20 +45,55 @@ class App extends React.Component {
 
     window.addEventListener('keyup', (e) => {
       if (CangJieToogleKeyBinding[e.key]) {
-        document.querySelector(`div.hg-button.hg-standardBtn.toogle[data-skbtn="${e.key}"]`).classList.remove('toogle');
+        let button = document.querySelector(`div.hg-button.hg-standardBtn.toogle[data-skbtn="${e.key}"]`);
+        if (button) button.classList.remove('toogle');
       }
     });
   }
 
   render() {
+    const library = CangjieLibrary.default;
+    let runtime = 0;
+    let phrase = "";
+
     const CangJieKeyboard = () => {
       return <Keyboard mergeDisplay display={CangJieKeyBinding} physicalKeyboardHighlight />
+    };
+
+    const onChange = (e) => {
+      e.preventDefault();
+
+      if (e.nativeEvent.inputType === "deleteContentBackward") {
+        if (this.state.Text) this.setText(this.state.Text.slice(0, this.state.Text.lenght - 1)[0]);
+      } else if (e.nativeEvent.inputType === "insertText") {  
+          if (runtime >= 4 && e.nativeEvent.data === " ") {
+            let phrase = this.state.Text.slice(this.state.Text.lenght - runtime, this.state.Text.lenght)[0];
+
+            if (phrase) {
+              this.setText(this.state.Text.slice(this.state.Text.lenght)[0], this.state.Text.lenght - runtime);
+              this.setText(this.state.Text + library[phrase][0]);
+              phrase = "";
+            } else {
+              this.setText(this.state.Text + " ");
+            }
+          } else {
+            if (e.nativeEvent.data = " ") {
+              this.setText(this.state.Text + " ");
+            } else {
+              let text = this.state.Text += library[e.nativeEvent.data][0];
+              phrase += library[e.nativeEvent.data][0];
+
+              this.setText(text);
+              runtime++;
+            }
+          }
+      }
     };
 
     return (
       <div className="App">
         <header className="App-header">
-          <textarea className="App-textbox" value={this.state.Text}>
+          <textarea className="App-textbox" value={this.state.Text} onChange={onChange}>
           </textarea>
         </header>
         <CangJieKeyboard />
