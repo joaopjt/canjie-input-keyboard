@@ -95,7 +95,7 @@ class App extends React.Component {
               this.setRuntime(this.state.runtime + 1);
 
               console.log(this.state.runtime);
-              console.log(this.state.prhase);
+              console.log(this.state.phrase);
             }
           }
       }
