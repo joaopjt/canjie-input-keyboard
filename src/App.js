@@ -77,7 +77,7 @@ class App extends React.Component {
               this.setText(this.state.Text + " ");
             }
           } else {
-            if (e.nativeEvent.data = " ") {
+            if (e.nativeEvent.data === " ") {
               this.setText(this.state.Text + " ");
             } else {
               let text = this.state.Text += library[e.nativeEvent.data][0];
