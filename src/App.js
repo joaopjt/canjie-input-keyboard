@@ -74,10 +74,12 @@ class App extends React.Component {
         if (this.state.Text) this.setText(this.state.Text.slice(0, this.state.Text.lenght - 1)[0]);
       } else if (e.nativeEvent.inputType === "insertText") {  
           if (this.state.runtime >= 1 && e.nativeEvent.data === " ") {
-            console.log(`- ${this.state.runtime}/${this.state.phrase})`);
+            console.log(`${this.state.runtime}/${this.state.phrase}`);
             if (this.state.phrase) {
-              this.setText(this.state.Text.slice(this.state.Text.lenght)[0], this.state.Text.lenght - this.setRuntime(this.state.runtime));
-              this.setText(this.state.Text + this.library[this.state.phrase][0]);
+              let pattern = this.state.Text.slice(this.state.Text.lenght - this.state.runtime, this.state.Text.lenght)[0];
+              console.log(pattern);
+              console.log(this.state.Text.replace(pattern, this.library[this.state.phrase][0]));
+              this.setText(this.state.Text.replace(pattern, this.library[this.state.phrase][0]));
               this.setPhrase("");
               this.setRuntime(0);
             } else {
@@ -90,7 +92,7 @@ class App extends React.Component {
               this.setRuntime(0);
             } else {
               this.setText(this.state.Text += this.library[e.nativeEvent.data][0]);
-              this.setPhrase(this.state.phrase += this.library[e.nativeEvent.data][0]);
+              this.setPhrase(this.state.phrase += e.nativeEvent.data);
               this.setRuntime(this.state.runtime + 1);
 
               console.log(this.state.runtime);
