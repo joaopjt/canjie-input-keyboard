@@ -71,14 +71,13 @@ class App extends React.Component {
       e.preventDefault();
 
       if (e.nativeEvent.inputType === "deleteContentBackward") {
-        if (this.state.Text) this.setText(this.state.Text.slice(0, this.state.Text.lenght - 1)[0]);
+        if (this.state.Text) this.setText(this.state.Text.slice(0, this.state.Text.length - 1)[0]);
       } else if (e.nativeEvent.inputType === "insertText") {  
           if (this.state.runtime >= 1 && e.nativeEvent.data === " ") {
-            console.log(`${this.state.runtime}/${this.state.phrase}`);
             if (this.state.phrase) {
-              let pattern = this.state.Text.slice(this.state.Text.lenght - this.state.runtime, this.state.Text.lenght)[0];
-              console.log(pattern);
-              console.log(this.state.Text.replace(pattern, this.library[this.state.phrase][0]));
+              let start = this.state.Text.length - this.state.runtime;
+              let pattern = this.state.Text.slice(start, this.state.Text.length);
+              
               this.setText(this.state.Text.replace(pattern, this.library[this.state.phrase][0]));
               this.setPhrase("");
               this.setRuntime(0);
@@ -94,9 +93,6 @@ class App extends React.Component {
               this.setText(this.state.Text += this.library[e.nativeEvent.data][0]);
               this.setPhrase(this.state.phrase += e.nativeEvent.data);
               this.setRuntime(this.state.runtime + 1);
-
-              console.log(this.state.runtime);
-              console.log(this.state.phrase);
             }
           }
       }
