@@ -13,22 +13,22 @@ class App extends React.Component {
 
     this.library = CangjieLibrary.default;
     this.state = {
-      Text: "",
+      text: "",
       phrase: "",
       runtime: 0
     };
   }
 
-  setText(text) {
-    this.setState({ Text: text });
+  setText(t) {
+    this.setState({ text: t });
   }
 
-  setPhrase(phrase) {
-    this.setState({ phrase: phrase });
+  setPhrase(p) {
+    this.setState({ phrase: p });
   }
 
-  setRuntime(runtime) {
-    this.setState({ runtime: runtime });
+  setRuntime(r) {
+    this.setState({ runtime: r });
   }
 
   setup() {
@@ -46,8 +46,6 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    this.setup(); // Toogle setup
-
     window.addEventListener('keydown', (e) => {
       if (CangJieToogleKeyBinding[e.key]) {
         document.querySelector(`div.hg-button.hg-standardBtn[data-skbtn="${e.key}"]`).classList.add('toogle');
@@ -60,6 +58,8 @@ class App extends React.Component {
         if (button) button.classList.remove('toogle');
       }
     });
+
+    this.setup();
   }
 
   render() {
@@ -71,37 +71,40 @@ class App extends React.Component {
       e.preventDefault();
 
       if (e.nativeEvent.inputType === "deleteContentBackward") {
-        if (this.state.Text) this.setText(this.state.Text.slice(0, this.state.Text.length - 1)[0]);
-      } else if (e.nativeEvent.inputType === "insertText") {  
-          if (this.state.runtime >= 1 && e.nativeEvent.data === " ") {
-            if (this.state.phrase && this.library[this.state.phrase]) {
-              let start = this.state.Text.length - this.state.runtime;
-              let pattern = this.state.Text.slice(start, this.state.Text.length);
-              
-              this.setText(this.state.Text.replace(pattern, this.library[this.state.phrase][0]));
-              this.setPhrase("");
-              this.setRuntime(0);
-            } else {
-              this.setText(this.state.Text + " ");
-            }
+        if (this.state.text.length) this.setText(this.state.text.slice(0, this.state.text.length - 1)[0]);
+        if (this.state.phrase.length) this.setPhrase(this.state.phrase.slice(0, this.state.phrase.length - 1)[0]);
+        if (this.state.runtime >= 1) this.setRuntime(this.state.runtime - 1);
+
+        if (!this.state.text.length) {
+          this.setPhrase("");
+          this.setRuntime(0);
+        }
+      } else if (e.nativeEvent.inputType === "insertText") {
+        if (this.state.runtime >= 1 && e.nativeEvent.data === " " && this.library[this.state.phrase]) {
+          let start = this.state.text.length - this.state.runtime;
+          let pattern = this.state.text.slice(start, this.state.text.length);
+          
+          this.setText(this.state.text.replace(pattern, this.library[this.state.phrase][0]));
+          this.setPhrase("");
+          this.setRuntime(0);
+        } else {
+          if (e.nativeEvent.data === " ") {
+            this.setText(this.state.text + " ");
+            this.setPhrase("");
+            this.setRuntime(0);
           } else {
-            if (e.nativeEvent.data === " ") {
-              this.setText(this.state.Text + " ");
-              this.setPhrase("");
-              this.setRuntime(0);
-            } else {
-              this.setText(this.state.Text += this.library[e.nativeEvent.data][0]);
-              this.setPhrase(this.state.phrase += e.nativeEvent.data);
-              this.setRuntime(this.state.runtime + 1);
-            }
+            this.setText(this.state.text += this.library[e.nativeEvent.data][0]);
+            this.setPhrase(this.state.phrase += e.nativeEvent.data);
+            this.setRuntime(this.state.runtime + 1);
           }
+        }
       }
     };
 
     return (
       <div className="App">
         <header className="App-header">
-          <textarea className="App-textbox" value={this.state.Text} onChange={onChange}>
+          <textarea className="App-textbox" value={this.state.text} onChange={onChange}>
           </textarea>
         </header>
         <CangJieKeyboard />
