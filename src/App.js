@@ -74,7 +74,7 @@ class App extends React.Component {
         if (this.state.Text) this.setText(this.state.Text.slice(0, this.state.Text.length - 1)[0]);
       } else if (e.nativeEvent.inputType === "insertText") {  
           if (this.state.runtime >= 1 && e.nativeEvent.data === " ") {
-            if (this.state.phrase) {
+            if (this.state.phrase && this.library[this.state.phrase]) {
               let start = this.state.Text.length - this.state.runtime;
               let pattern = this.state.Text.slice(start, this.state.Text.length);
               
