@@ -11,6 +11,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
+    this.library = CangjieLibrary.default;
     this.state = {
       Text: "",
       phrase: "",
@@ -62,8 +63,6 @@ class App extends React.Component {
   }
 
   render() {
-    const library = CangjieLibrary.default;
-
     const CangJieKeyboard = () => {
       return (<Keyboard mergeDisplay display={CangJieKeyBinding} physicalKeyboardHighlight />)
     };
@@ -74,11 +73,11 @@ class App extends React.Component {
       if (e.nativeEvent.inputType === "deleteContentBackward") {
         if (this.state.Text) this.setText(this.state.Text.slice(0, this.state.Text.lenght - 1)[0]);
       } else if (e.nativeEvent.inputType === "insertText") {  
-          if (this.runtime >= 1 && e.nativeEvent.data === " ") {
+          if (this.state.runtime >= 1 && e.nativeEvent.data === " ") {
             console.log(`- ${this.state.runtime}/${this.state.phrase})`);
             if (this.state.phrase) {
               this.setText(this.state.Text.slice(this.state.Text.lenght)[0], this.state.Text.lenght - this.setRuntime(this.state.runtime));
-              this.setText(this.state.Text + library[this.state.phrase][0]);
+              this.setText(this.state.Text + this.library[this.state.phrase][0]);
               this.setPhrase("");
               this.setRuntime(0);
             } else {
@@ -90,8 +89,8 @@ class App extends React.Component {
               this.setPhrase("");
               this.setRuntime(0);
             } else {
-              this.setText(this.state.Text += library[e.nativeEvent.data][0]);
-              this.setPhrase(this.state.phrase += library[e.nativeEvent.data][0]);
+              this.setText(this.state.Text += this.library[e.nativeEvent.data][0]);
+              this.setPhrase(this.state.phrase += this.library[e.nativeEvent.data][0]);
               this.setRuntime(this.state.runtime + 1);
 
               console.log(this.state.runtime);
