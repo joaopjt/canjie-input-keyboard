@@ -46,20 +46,21 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    window.addEventListener('keydown', (e) => {
+    this.setup();
+
+    document.querySelector('textarea.App-textbox').addEventListener('keydown', (e) => {
       if (CangJieToogleKeyBinding[e.key]) {
         document.querySelector(`div.hg-button.hg-standardBtn[data-skbtn="${e.key}"]`).classList.add('toogle');
       }
     });
 
-    window.addEventListener('keyup', (e) => {
+    document.querySelector('textarea.App-textbox').addEventListener('keyup', (e) => {
       if (CangJieToogleKeyBinding[e.key]) {
         let button = document.querySelector(`div.hg-button.hg-standardBtn.toogle[data-skbtn="${e.key}"]`);
+
         if (button) button.classList.remove('toogle');
       }
     });
-
-    this.setup();
   }
 
   render() {
@@ -71,12 +72,21 @@ class App extends React.Component {
       e.preventDefault();
 
       if (e.nativeEvent.inputType === "deleteContentBackward") {
-        if (this.state.text.length) this.setText(this.state.text.slice(0, this.state.text.length - 1)[0]);
-        if (this.state.phrase.length) this.setPhrase(this.state.phrase.slice(0, this.state.phrase.length - 1)[0]);
-        if (this.state.runtime >= 1) this.setRuntime(this.state.runtime - 1);
-
-        if (!this.state.text.length) {
+        if (this.state.text.length) {
+          this.setText(this.state.text.slice(0, this.state.text.length - 1)[0]);
+        } else {
+          this.setText("");
+        }
+        
+        if (this.state.text && this.state.phrase.length) {
+          this.setPhrase(this.state.phrase.slice(0, this.state.phrase.length - 1)[0]);
+        } else {
           this.setPhrase("");
+        }
+
+        if (this.state.text && this.state.runtime >= 1) {
+          this.setRuntime(this.state.runtime - 1);
+        } else {
           this.setRuntime(0);
         }
       } else if (e.nativeEvent.inputType === "insertText") {
