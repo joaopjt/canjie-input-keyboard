@@ -46,8 +46,6 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    this.setup();
-
     document.querySelector('textarea.App-textbox').addEventListener('keydown', (e) => {
       if (CangJieToogleKeyBinding[e.key]) {
         document.querySelector(`div.hg-button.hg-standardBtn[data-skbtn="${e.key}"]`).classList.add('toogle');
@@ -61,13 +59,11 @@ class App extends React.Component {
         if (button) button.classList.remove('toogle');
       }
     });
+
+    this.setup();
   }
 
   render() {
-    const CangJieKeyboard = () => {
-      return (<Keyboard mergeDisplay display={CangJieKeyBinding} physicalKeyboardHighlight />)
-    };
-
     const onChange = (e) => {
       e.preventDefault();
 
@@ -117,7 +113,7 @@ class App extends React.Component {
           <textarea className="App-textbox" value={this.state.text} onChange={onChange}>
           </textarea>
         </header>
-        <CangJieKeyboard />
+        <Keyboard mergeDisplay display={CangJieKeyBinding} physicalKeyboardHighlight />
       </div>
     );
   }
