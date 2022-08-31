@@ -68,7 +68,7 @@ class App extends React.Component {
       e.preventDefault();
 
       if (e.nativeEvent.inputType === "deleteContentBackward") {
-        if (this.state.text.length) {
+        if (this.state.text.length >= 1) {
           this.setText(this.state.text.slice(0, this.state.text.length - 1)[0]);
         } else {
           this.setText("");
@@ -95,7 +95,7 @@ class App extends React.Component {
           this.setRuntime(0);
         } else {
           if (e.nativeEvent.data === " ") {
-            this.setText(this.state.text + " ");
+            this.setText((this.state.text || "") + " ");
             this.setPhrase("");
             this.setRuntime(0);
           } else {
