@@ -46,13 +46,13 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    document.querySelector('textarea.App-textbox').addEventListener('keydown', (e) => {
+    document.querySelector('html').addEventListener('keydown', (e) => {
       if (CangJieToogleKeyBinding[e.key]) {
         document.querySelector(`div.hg-button.hg-standardBtn[data-skbtn="${e.key}"]`).classList.add('toogle');
       }
     });
 
-    document.querySelector('textarea.App-textbox').addEventListener('keyup', (e) => {
+    document.querySelector('html').addEventListener('keyup', (e) => {
       if (CangJieToogleKeyBinding[e.key]) {
         let button = document.querySelector(`div.hg-button.hg-standardBtn.toogle[data-skbtn="${e.key}"]`);
 
@@ -65,17 +65,17 @@ class App extends React.Component {
 
   render() {
     const onChange = (e) => {
-      e.preventDefault();
-
       if (e.nativeEvent.inputType === "deleteContentBackward") {
-        if (this.state.text.length >= 1) {
-          this.setText(this.state.text.slice(0, this.state.text.length - 1)[0]);
-        } else {
-          this.setText("");
-        }
-        
         if (this.state.text && this.state.phrase.length) {
-          this.setPhrase(this.state.phrase.slice(0, this.state.phrase.length - 1)[0]);
+          let t = "";
+          
+          Object(String(this.state.text)).values().forEach(text => {
+            Object(this.library).values().map((v) => v === text).forEach(vv => {
+              t += vv;
+            });  
+          });
+          
+          this.setPhrase(t);
         } else {
           this.setPhrase("");
         }
@@ -86,6 +86,8 @@ class App extends React.Component {
           this.setRuntime(0);
         }
       } else if (e.nativeEvent.inputType === "insertText") {
+        e.preventDefault();
+
         if (this.state.runtime >= 1 && e.nativeEvent.data === " " && this.library[this.state.phrase]) {
           let start = this.state.text.length - this.state.runtime;
           let pattern = this.state.text.slice(start, this.state.text.length);
@@ -95,11 +97,15 @@ class App extends React.Component {
           this.setRuntime(0);
         } else {
           if (e.nativeEvent.data === " ") {
-            this.setText((this.state.text || "") + " ");
+            let text = this.state.text || "";
+
+            this.setText(text + " ");
             this.setPhrase("");
             this.setRuntime(0);
           } else {
-            this.setText(this.state.text += this.library[e.nativeEvent.data][0]);
+            let text = this.state.text || "";
+
+            this.setText(text += this.library[e.nativeEvent.data]);
             this.setPhrase(this.state.phrase += e.nativeEvent.data);
             this.setRuntime(this.state.runtime + 1);
           }
@@ -107,12 +113,15 @@ class App extends React.Component {
       }
     };
 
+    /* 
+    <header className="App-header">
+      <textarea className="App-textbox" value={this.state.text} onChange={onChange}>
+      </textarea>
+    </header>
+    */
+
     return (
-      <div className="App">
-        <header className="App-header">
-          <textarea className="App-textbox" value={this.state.text} onChange={onChange}>
-          </textarea>
-        </header>
+      <div className="App">    
         <Keyboard mergeDisplay display={CangJieKeyBinding} physicalKeyboardHighlight />
       </div>
     );
